@@ -2,6 +2,7 @@ const {
   asymmetricEncryption,
   symmetricEncryption,
   symmetricDecryption,
+  genKeyPair,
 } = require("./encryption");
 const crypto = require("crypto");
 const globalDatabase = {};
@@ -51,8 +52,22 @@ describe("func: symmetricDecryption", () => {
   });
 });
 
+describe("func: genKeyPair", () => {
+  it("should return private & public keys", () => {
+    const passPhrase = crypto.randomBytes(32);
+    const { publicKey, privateKey } = genKeyPair(passPhrase);
+    globalDatabase["publicKey"] = publicKey;
+    globalDatabase["privateKey"] = privateKey;
+    expect(publicKey).not.toEqual(privateKey);
+  });
+});
+
 describe("func: asymmetricEncryption", () => {
-  it("should return something", () => {
-    expect(asymmetricEncryption()).toBe(1);
+  it("should return encrypted message", () => {
+    const publicKey = globalDatabase["publicKey"].toString();
+    const message = "i love you";
+    const encryptedData = asymmetricEncryption(message, publicKey);
+    globalDatabase["encryptedData"] = encryptedData;
+    expect(encryptedData).not.toBeUndefined;
   });
 });
