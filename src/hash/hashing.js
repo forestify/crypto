@@ -7,19 +7,13 @@ function generateRandomSalt(length) {
 
 // create a hash
 function hash(data) {
-  return crypto
-    .createHash("sha512")
-    .update(data)
-    .digest("hex");
+  return crypto.createHash("sha512").update(data).digest("hex");
 }
 
 // create hash with salt
 function hashWithSalt(data, salt) {
   data = salt + data;
-  return crypto
-    .createHash("sha512")
-    .update(data)
-    .digest("hex");
+  return crypto.createHash("sha512").update(data).digest("hex");
 }
 
 // create a hash with cost factor
@@ -27,10 +21,7 @@ function hashWithCostFactor(data, salt, cost) {
   const costFactor = cost;
   while (cost >= 1) {
     data = salt + data;
-    data = crypto
-      .createHash("sha512")
-      .update(data)
-      .digest("hex");
+    data = crypto.createHash("sha512").update(data).digest("hex");
     cost--;
   }
   return `$${costFactor}$${salt}$${data}`;
@@ -43,10 +34,15 @@ function verifyHash(data, hash) {
   return expectedHash == hash;
 }
 
+function generateHmac(message, key) {
+  return crypto.createHmac("sha256", key).update(message).digest("hex");
+}
+
 module.exports = {
   verifyHash,
   hashWithCostFactor,
   hashWithSalt,
   hash,
-  generateRandomSalt
+  generateRandomSalt,
+  generateHmac,
 };

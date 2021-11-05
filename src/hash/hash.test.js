@@ -4,6 +4,7 @@ const {
   hashWithSalt,
   hash,
   generateRandomSalt,
+  generateHmac,
 } = require("./hashing.js");
 
 const globalDatabase = {};
@@ -84,5 +85,16 @@ describe("function: verifyHash", () => {
     const data = "helloworld!";
     const hash = globalDatabase["hash"];
     expect(verifyHash(data, hash)).toBe(false);
+  });
+});
+
+describe("function: generateHmac", () => {
+  it("should return hash based on keys", () => {
+    const key1 = "secret";
+    const key2 = "supersecret";
+    const message = "hello world";
+    const hmac1 = generateHmac(message, key1);
+    const hmac2 = generateHmac(message, key2);
+    expect(hmac1).not.toEqual(hmac2);
   });
 });
