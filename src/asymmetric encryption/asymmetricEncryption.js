@@ -23,7 +23,40 @@ function encrypt(message, publicKey) {
   return encryptedMessage.toString("hex");
 }
 
+function decrypt(message, privateKey, passPhrase) {
+  const messageBuffer = Buffer.from(message, "hex");
+  const decryptedMessage = crypto.privateDecrypt(
+    {
+      key: privateKey,
+      passphrase: passPhrase,
+    },
+    messageBuffer
+  );
+  return decryptedMessage.toString();
+}
+
+function sign(message, privateKey, passPhrase) {
+  const signer = crypto.createSign("rsa-sha256");
+  signer.update(message);
+  return signer.sign(
+    {
+      key: privateKey,
+      passphrase: passPhrase,
+    },
+    "hex"
+  );
+}
+
+function verifySign(message, publicKey, signature) {
+  const verifier = crypto.createVerify("rsa-sha256");
+  verifier.update(message);
+  return verifier.verify(publicKey, signature, "hex");
+}
+
 module.exports = {
   encrypt,
+  decrypt,
+  sign,
+  verifySign,
   genKeyPair,
 };
