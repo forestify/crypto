@@ -1,5 +1,4 @@
 const crypto = require("crypto");
-const util = require("util");
 
 /*
     symmetric encryption:
@@ -8,7 +7,7 @@ const util = require("util");
     iv - Must be 16 bytes for aes algorithm
 */
 
-function symmetricEncryption(message, key) {
+function encrypt(message, key) {
   const iv = crypto.randomBytes(16);
   const cipher = crypto.createCipheriv("aes256", key, iv);
   const encryptedMessage = Buffer.concat([
@@ -22,7 +21,7 @@ function symmetricEncryption(message, key) {
   return `${iv.toString("hex")}:${encryptedMessage.toString("hex")}`;
 }
 
-function symmetricDecryption(scrumbledMessage, key) {
+function decrypt(scrumbledMessage, key) {
   let [iv, cipherText] = scrumbledMessage.split(":");
   iv = Buffer.from(iv, "hex");
   cipherText = Buffer.from(cipherText, "hex");
@@ -34,32 +33,7 @@ function symmetricDecryption(scrumbledMessage, key) {
   return decryptedMessage.toString();
 }
 
-function genKeyPair(passPhrase) {
-  const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
-    modulusLength: 4096,
-    publicKeyEncoding: {
-      type: "spki",
-      format: "pem",
-    },
-    privateKeyEncoding: {
-      type: "pkcs8",
-      format: "pem",
-      cipher: "aes-256-cbc",
-      passphrase: passPhrase,
-    },
-  });
-  return { publicKey, privateKey };
-}
-
-function asymmetricEncryption(message, publicKey) {
-  const messageBuffer = Buffer.from(message, "utf-8");
-  const encryptedMessage = crypto.publicEncrypt(publicKey, messageBuffer);
-  return encryptedMessage.toString("hex");
-}
-
 module.exports = {
-  asymmetricEncryption,
-  symmetricEncryption,
-  symmetricDecryption,
-  genKeyPair,
+  encrypt,
+  decrypt,
 };
