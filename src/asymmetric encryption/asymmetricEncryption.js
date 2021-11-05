@@ -23,7 +23,20 @@ function encrypt(message, publicKey) {
   return encryptedMessage.toString("hex");
 }
 
+function decrypt(message, privateKey, passPhrase) {
+  const messageBuffer = Buffer.from(message, "hex");
+  const decryptedMessage = crypto.privateDecrypt(
+    {
+      key: privateKey,
+      passphrase: passPhrase,
+    },
+    messageBuffer
+  );
+  return decryptedMessage.toString();
+}
+
 module.exports = {
   encrypt,
+  decrypt,
   genKeyPair,
 };
