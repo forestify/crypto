@@ -1,4 +1,8 @@
-const { asymmetricEncryption, symmetricEncryption } = require("./encryption");
+const {
+  asymmetricEncryption,
+  symmetricEncryption,
+  symmetricDecryption,
+} = require("./encryption");
 const crypto = require("crypto");
 const globalDatabase = {};
 
@@ -24,6 +28,8 @@ describe("func: symmetricDecryption", () => {
     const key = crypto.randomBytes(32);
     const message = "you know what!";
     const cipherText = symmetricEncryption(message, key);
+    globalDatabase["message"] = message;
+    globalDatabase["key"] = key.toString("hex");
     globalDatabase["cipherText"] = cipherText;
     expect(cipherText.length).toBeGreaterThan(31);
   });
@@ -33,6 +39,15 @@ describe("func: symmetricDecryption", () => {
     const message = "you know what!";
     const cipherText = symmetricEncryption(message, key);
     expect(globalDatabase["cipherText"]).not.toEqual(cipherText);
+  });
+});
+
+describe("func: symmetricDecryption", () => {
+  it("should return message", () => {
+    const key = Buffer.from(globalDatabase["key"], "hex");
+    const cipherText = globalDatabase["cipherText"];
+    const decryptedMessage = symmetricDecryption(cipherText, key);
+    expect(decryptedMessage.toString()).toEqual(globalDatabase["message"]);
   });
 });
 
