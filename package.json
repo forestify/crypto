@@ -12,6 +12,7 @@
     "jest": "^27.3.1"
   },
   "devDependencies": {
+    "@forestify/crypto": "^1.0.2",
     "@types/jest": "^27.0.2"
   }
 }
